@@ -1,5 +1,5 @@
 // src/lib/auth/tiktok-service.ts
-import { TikTokTokenResponse, TikTokUserInfo } from '../../../types';
+import { TikTokTokenResponse, TikTokUserInfo } from "@/types";
 
 export class TikTokService {
   private static readonly TOKEN_URL = 'https://open.tiktok.com/v2/oauth/token/';

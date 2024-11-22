@@ -1,4 +1,3 @@
-// src/app/api/auth/tiktok/callback/route.ts
 import { type NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { TikTokService } from '../../../lib/auth/tiktok-service';
@@ -11,7 +10,9 @@ export async function GET(request: NextRequest) {
     const error = searchParams.get('error');
     const error_description = searchParams.get('error_description');
 
-    const storedState = cookies().get('csrfState')?.value;
+    // Await the cookies() promise and access the 'csrfState'
+    const cookieStore = await cookies();
+    const storedState = cookieStore.get('csrfState')?.value;
 
     if (error) {
       return Response.redirect(
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Set session cookie
-    cookies().set('tiktok_session', JSON.stringify({
+    await cookieStore.set('tiktok_session', JSON.stringify({
       access_token: tokenData.access_token,
       refresh_token: tokenData.refresh_token,
       open_id: tokenData.open_id,
@@ -54,7 +55,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Store user info in a separate cookie
-    cookies().set('tiktok_user', JSON.stringify(userInfo), {
+    await cookieStore.set('tiktok_user', JSON.stringify(userInfo), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -69,6 +70,7 @@ export async function GET(request: NextRequest) {
     );
   } finally {
     // Clean up the state cookie
-    cookies().delete('csrfState');
+    const cookieStore = await cookies();
+    await cookieStore.delete('csrfState');
   }
 }
