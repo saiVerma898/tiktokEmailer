@@ -1,4 +1,3 @@
-// src/context/TikTokAuthContext.tsx
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -35,8 +34,8 @@ export function TikTokAuthProvider({ children }: { children: React.ReactNode }) 
       if (data.user) {
         setUser(data.user);
       }
-    } catch (err) {
-      setError('Failed to load user session');
+    } catch {
+      setError('Failed to load user session'); // No need for 'err' variable
     } finally {
       setIsLoading(false);
     }
@@ -46,8 +45,8 @@ export function TikTokAuthProvider({ children }: { children: React.ReactNode }) 
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       setUser(null);
-    } catch (err) {
-      setError('Failed to logout');
+    } catch {
+      setError('Failed to logout'); // No need for 'err' variable
     }
   };
 

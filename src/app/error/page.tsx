@@ -1,6 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link'; // Import Link from next/link
 
 export default function ErrorPage() {
   const searchParams = useSearchParams();
@@ -13,12 +14,12 @@ export default function ErrorPage() {
         <h1 className="font-bold text-lg mb-2">Authentication Error</h1>
         <p>{error}</p>
         {description && <p className="mt-2 text-sm">{description}</p>}
-        <a
+        <Link
           href="/"
           className="mt-4 inline-block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
         >
           Return Home
-        </a>
+        </Link>
       </div>
     </div>
   );
