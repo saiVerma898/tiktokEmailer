@@ -2,13 +2,10 @@ import { type NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { generateStateToken } from '../../lib/auth/utils';
 
-export async function GET(request: NextRequest) {
+export async function GET() {  // Removed 'request' as it's not used
   try {
     // Generate a CSRF state token
     const stateToken = generateStateToken();
-
-    // Get the cookie store (for reading cookies, not for setting)
-    const cookieStore = cookies();
 
     // Set the 'csrfState' cookie by constructing the response
     const response = new Response(null, {
