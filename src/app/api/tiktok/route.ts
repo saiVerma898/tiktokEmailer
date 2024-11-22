@@ -1,8 +1,6 @@
-import { type NextRequest } from 'next/server';
-import { cookies } from 'next/headers';
 import { generateStateToken } from '../../lib/auth/utils';
 
-export async function GET() {  // Removed 'request' as it's not used
+export async function GET() {  // No need for 'NextRequest' now
   try {
     // Generate a CSRF state token
     const stateToken = generateStateToken();
