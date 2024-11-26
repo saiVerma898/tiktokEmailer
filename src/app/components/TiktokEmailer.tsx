@@ -10,7 +10,7 @@ export default function TiktokEmailer() {
 
   const handleTikTokLogin = () => {
     setIsLoading(true);
-    window.location.href = '/api/tiktok';
+    window.location.href = '/api/auth/tiktok';
   };
 
   if (error) {
