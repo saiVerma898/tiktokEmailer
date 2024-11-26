@@ -26,7 +26,7 @@ export default function TikTokDashboard() {
         const userData = await response.json();
         setUser(userData);
         setLoading(false);
-      } catch (err) {
+      } catch  {
         setError('Could not load user information');
         setLoading(false);
       }
