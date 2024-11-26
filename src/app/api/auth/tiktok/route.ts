@@ -1,4 +1,4 @@
-import { generateStateToken } from '../../lib/auth/utils';
+import { generateStateToken } from '../../../lib/auth/utils';
 
 export async function GET() {  // No need for 'NextRequest' now
   try {

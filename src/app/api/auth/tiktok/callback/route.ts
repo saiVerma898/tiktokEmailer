@@ -1,6 +1,6 @@
 import { type NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
-import { TikTokService } from '../../../lib/auth/tiktok-service';
+import { TikTokService } from '../../../../lib/auth/tiktok-service';
 
 export async function GET(request: NextRequest) {
   try {
