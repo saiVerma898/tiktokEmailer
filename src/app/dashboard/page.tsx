@@ -1,110 +1,90 @@
-// app/dashboard/page.tsx
-'use client'
-
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { 
-  Box, 
-  Card, 
-  CardContent, 
-  Typography, 
-  Grid, 
-  Avatar, 
-  Container,
-  Paper
-} from '@mui/material'
+import React, { useState, useEffect } from 'react';
 
 interface TikTokUser {
-  open_id: string
-  union_id: string
-  avatar_url?: string
-  display_name?: string
-  bio_description?: string
-  follower_count?: number
-  following_count?: number
-  likes_count?: number
+  open_id: string;
+  union_id: string;
+  avatar_url: string;
+  display_name: string;
+  bio?: string;
 }
 
-export default async function DashboardPage() {
-  const cookieStore = cookies()
-  const userDataCookie = cookieStore.get('tiktok_user')
-  
-  if (!userDataCookie?.value) {
-    redirect('/')
+export default function TikTokDashboard() {
+  const [user, setUser] = useState<TikTokUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const response = await fetch('/api/tiktok/user');
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        const userData = await response.json();
+        setUser(userData);
+        setLoading(false);
+      } catch (err) {
+        setError('Could not load user information');
+        setLoading(false);
+      }
+    }
+
+    fetchUserData();
+  }, []);
+
+  if (loading) {
+    return <div className="p-6 text-center">Loading...</div>;
   }
-  
-  const userData: TikTokUser = JSON.parse(userDataCookie.value)
-  
+
+  if (error) {
+    return <div className="p-6 text-red-500">{error}</div>;
+  }
+
+  if (!user) {
+    return <div className="p-6">No user data available</div>;
+  }
+
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ py: 8 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          Dashboard
-        </Typography>
-        
-        {/* Profile Card */}
-        <Paper elevation={3} sx={{ mb: 4, p: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-            {userData.avatar_url && (
-              <Avatar 
-                src={userData.avatar_url} 
-                alt={userData.display_name}
-                sx={{ width: 80, height: 80, mr: 3 }}
+    <div className="container mx-auto p-6">
+      <div className="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="p-4 bg-gray-100 border-b">
+          <h2 className="text-xl font-bold text-gray-800">TikTok Profile</h2>
+        </div>
+        <div className="p-4">
+          <div className="flex items-center space-x-4 mb-4">
+            {user.avatar_url && (
+              <img 
+                src={user.avatar_url} 
+                alt={`${user.display_name}'s avatar`} 
+                className="w-16 h-16 rounded-full object-cover"
               />
             )}
-            <Box>
-              <Typography variant="h4" gutterBottom>
-                {userData.display_name}
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                {userData.bio_description}
-              </Typography>
-            </Box>
-          </Box>
-          
-          {/* Stats Grid */}
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h4" align="center">
-                    {userData.follower_count?.toLocaleString() ?? 0}
-                  </Typography>
-                  <Typography variant="body1" align="center" color="text.secondary">
-                    Followers
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            
-            <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h4" align="center">
-                    {userData.following_count?.toLocaleString() ?? 0}
-                  </Typography>
-                  <Typography variant="body1" align="center" color="text.secondary">
-                    Following
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            
-            <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h4" align="center">
-                    {userData.likes_count?.toLocaleString() ?? 0}
-                  </Typography>
-                  <Typography variant="body1" align="center" color="text.secondary">
-                    Likes
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </Paper>
-      </Box>
-    </Container>
-  )
+            <div>
+              <h3 className="text-lg font-semibold">{user.display_name}</h3>
+              {user.bio && <p className="text-gray-600">{user.bio}</p>}
+            </div>
+          </div>
+
+          <div className="space-y-2 mb-4">
+            <div>
+              <strong className="text-gray-700">TikTok ID:</strong> {user.open_id}
+            </div>
+            <div>
+              <strong className="text-gray-700">Union ID:</strong> {user.union_id}
+            </div>
+          </div>
+
+          <button 
+            className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
+            onClick={() => {
+              fetch('/api/auth/logout', { method: 'POST' })
+                .then(() => window.location.href = '/login');
+            }}
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
