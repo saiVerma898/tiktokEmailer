@@ -8,21 +8,7 @@ export interface TikTokTokenResponse {
     scope: string;
   }
 
-  // src/types.ts
-
-export interface TikTokTokenResponse {
-    access_token: string;
-    refresh_token: string;
-    expires_in: number;
-    open_id: string;
-  }
   
-  export interface TikTokUserInfo {
-    id: string;
-    username: string;
-    avatar_url: string;
-    // Add other fields as per the TikTok API response
-  }
   
   export interface TikTokUserInfo {
     open_id: string;
@@ -43,4 +29,11 @@ export interface TikTokTokenResponse {
   export interface TikTokError {
     error: string;
     error_description: string;
+  }
+
+  export interface TikTokSession {
+    access_token: string
+    refresh_token: string
+    open_id: string
+    expires_at: number
   }

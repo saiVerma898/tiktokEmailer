@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
       maxAge: tokenData.expires_in,
     });
 
-    return Response.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/`);
+    return Response.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard`);
   } catch (error) {
     console.error('OAuth callback error:', error);
     return Response.redirect(
